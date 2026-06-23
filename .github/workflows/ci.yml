@@ -78,4 +78,5 @@ jobs:
         run: python src/download_sec_voluntary_filings.py --date 2026-06-22
 
       - name: Run integration tests
-        run: python -m pytest tests/integration/ -v --no-header -p no:warnings
+        # -m integration overrides the default "unit" marker filter in pyproject.toml
+        run: python -m pytest tests/integration/ -m integration -v --no-header
