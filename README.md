@@ -29,7 +29,6 @@ These three forms are the primary carriers of voluntary corporate action informa
 ├── README.md
 ├── requirements.txt
 ├── pyproject.toml            # Ruff linter + pytest config
-├── pytest.ini                # Pytest markers (unit / integration)
 ├── .github/
 │   └── workflows/
 │       └── ci.yml            # GitHub Actions CI pipeline
@@ -185,7 +184,7 @@ Tests use pytest markers to separate fast unit tests from integration tests. By 
 ./venv/bin/python -m pytest tests/ -v -m integration
 ```
 
-Integration tests use real filings from `output/sec_filings/` in dry-run mode (no LLM calls). Run `./venv/bin/python main.py --download-only` first to download the test data.
+Integration tests use real filings from `output/sec_filings/` in dry-run mode (no LLM calls). Run `./venv/bin/python main.py --download-only` first to download the test data. If filing data isn't available, integration tests skip gracefully.
 
 ## Linting & Formatting
 
@@ -201,7 +200,7 @@ Ruff is configured in `pyproject.toml` (line length 100, Python 3.11+):
 GitHub Actions runs on every push and PR:
 - **Lint** — ruff check
 - **Unit tests** — Python 3.11 + 3.12
-- **Integration tests** — downloads SEC filings, runs integration suite
+- **Integration tests** — downloads SEC filings, runs integration suite. The SEC EDGAR API may block CI IP ranges (403); if so, tests skip gracefully.
 
 ## SEC Fair Access
 
