@@ -1,3 +1,5 @@
+[![CI](https://github.com/aneeshcheriank/vca-flow/actions/workflows/ci.yml/badge.svg)](https://github.com/aneeshcheriank/vca-flow/actions/workflows/ci.yml)
+
 # vca-flow — Voluntary Corporate Action Flow
 
 Automated pipeline that downloads voluntary corporate action filings from the SEC EDGAR system, then extracts and validates key details (offer terms, price, expiration date) using a LangChain + LangGraph pipeline powered by DeepSeek.
