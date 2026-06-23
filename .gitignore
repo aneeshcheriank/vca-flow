@@ -1,0 +1,31 @@
+# Python virtual environment
+venv/
+
+# Environment variables (API keys)
+.env
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Pytest cache
+.pytest_cache/
+
+# Generated output (downloaded filings, extraction results)
+output/
+
+# macOS
+.DS_Store
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# IDE / editor
+.vscode/
+.idea/
+
+# Claude local settings
+.claude/
