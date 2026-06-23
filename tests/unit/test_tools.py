@@ -6,6 +6,8 @@ tests against real filing files.
 
 import pytest
 
+pytestmark = pytest.mark.unit
+
 from src.tools import (
     TARGET_FORM_PREFIXES,
     _extract_tag,
@@ -15,7 +17,6 @@ from src.tools import (
     is_target_form_type,
     parse_sec_header,
 )
-
 
 # ---------------------------------------------------------------------------
 # _extract_tag

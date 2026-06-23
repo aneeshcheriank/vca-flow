@@ -6,6 +6,8 @@ actual downloaded SEC EDGAR filings.
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 from src.tools import (
     extract_document_sections,
     extract_text_from_html,
@@ -15,7 +17,6 @@ from src.tools import (
     parse_sec_header,
     prepare_filing_for_llm,
 )
-
 
 # ---------------------------------------------------------------------------
 # parse_sec_header — real filings

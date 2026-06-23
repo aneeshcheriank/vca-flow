@@ -4,6 +4,8 @@ from datetime import date, timedelta
 
 import pytest
 
+pytestmark = pytest.mark.unit
+
 from src.business_rules import (
     rule_expiration_date_valid,
     rule_option_types_valid,
@@ -11,7 +13,6 @@ from src.business_rules import (
     run_all_business_rules,
 )
 from src.schema import Discrepancy
-
 
 # ---------------------------------------------------------------------------
 # Rule 1 — expiration date validity

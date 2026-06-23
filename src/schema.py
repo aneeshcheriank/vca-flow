@@ -6,10 +6,8 @@ and the Validation & Verification Agent.
 """
 
 from enum import Enum
-from typing import Optional
 
 from pydantic import BaseModel, Field
-
 
 # ---------------------------------------------------------------------------
 # Confidence score

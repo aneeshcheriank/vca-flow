@@ -31,6 +31,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parent
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
+from src.chain import process_date as chain_process_date
 from src.download_sec_voluntary_filings import (
     DEFAULT_TARGET_FORMS,
     load_manifest,
@@ -38,8 +39,6 @@ from src.download_sec_voluntary_filings import (
     save_manifest,
     sec_session,
 )
-from src.chain import DEFAULT_OUTPUT_DIR as CHAIN_DEFAULT_OUTPUT_DIR
-from src.chain import process_date as chain_process_date
 
 # ---------------------------------------------------------------------------
 # Paths

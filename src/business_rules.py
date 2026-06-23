@@ -12,7 +12,6 @@ from datetime import date, datetime
 
 from src.schema import Discrepancy
 
-
 # ---------------------------------------------------------------------------
 # Date parsing helpers
 # ---------------------------------------------------------------------------

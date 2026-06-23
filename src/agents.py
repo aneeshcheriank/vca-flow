@@ -7,13 +7,13 @@ Provides:
   - ValidationAgent       — validates extraction against source text
 """
 
-import json
 import os
 from typing import Optional
 
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 
+from src.business_rules import run_all_business_rules
 from src.prompts import (
     EXTRACTION_SYSTEM_PROMPT,
     EXTRACTION_USER_PROMPT,
@@ -23,10 +23,8 @@ from src.prompts import (
 from src.schema import (
     ConfidenceScore,
     CorporateActionExtraction,
-    Discrepancy,
     ValidationResult,
 )
-from src.business_rules import run_all_business_rules
 
 # Load .env on module import
 load_dotenv()

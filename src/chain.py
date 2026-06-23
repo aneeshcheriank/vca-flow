@@ -24,9 +24,9 @@ import argparse
 import json
 import logging
 import sys
-from datetime import date, datetime, timedelta
+from datetime import date
 from pathlib import Path
-from typing import Any, Optional, TypedDict
+from typing import Any, TypedDict
 
 # Ensure the project root is on sys.path so `from src.…` imports resolve
 # when this script is invoked as `python src/chain.py`.
@@ -41,8 +41,6 @@ from src.agents import ExtractionAgent, ValidationAgent, create_llm
 from src.schema import CorporateActionExtraction, ValidationResult
 from src.tools import (
     list_filings_for_date,
-    load_filing_text,
-    parse_sec_header,
     prepare_filing_for_llm,
 )
 
@@ -187,10 +185,7 @@ def build_graph() -> StateGraph:
 
 def _read_meta_json(filing_path: Path) -> dict[str, str]:
     """Read the companion -meta.json file next to a .txt filing."""
-    meta_path = filing_path.with_suffix("").with_suffix(".json")
-    # Handle the -meta suffix:  <adsh>.txt  →  <adsh>-meta.json
-    # But our tool creates: <adsh>.txt alongside <adsh>-meta.json
-    # The with_suffix chain above might not work directly. Let's build it:
+    # Build path to companion -meta.json: <adsh>.txt → <adsh>-meta.json
     parent = filing_path.parent
     stem = filing_path.stem  # <adsh>
     meta_candidate = parent / f"{stem}-meta.json"
@@ -234,13 +229,6 @@ def process_single(
             "validation": None,
             "error": None,
         }
-
-    # --- Run the graph ---
-    graph = build_graph() if dry_run else None  # graph is built per-call for simplicity
-
-    # For a single filing we use the nodes directly rather than graph.invoke,
-    # since graph.invoke expects a batch-oriented setup.  We can also just
-    # run the graph per filing.
 
     # Build initial state
     state: PipelineState = {

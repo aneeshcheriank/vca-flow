@@ -8,13 +8,14 @@ import json
 
 import pytest
 
+pytestmark = pytest.mark.integration
+
 from src.chain import (
     DEFAULT_OUTPUT_DIR,
     process_date,
     process_single,
 )
 from src.tools import list_filings_for_date
-
 
 # ---------------------------------------------------------------------------
 # process_date — dry run

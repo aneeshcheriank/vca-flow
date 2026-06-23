@@ -3,13 +3,14 @@
 import pytest
 from pydantic import ValidationError
 
+pytestmark = pytest.mark.unit
+
 from src.schema import (
     ConfidenceScore,
     CorporateActionExtraction,
     Discrepancy,
     ValidationResult,
 )
-
 
 # ---------------------------------------------------------------------------
 # ConfidenceScore
