@@ -26,7 +26,12 @@ These three forms are the primary carriers of voluntary corporate action informa
 ├── main.py                  # End-to-end pipeline entry point
 ├── README.md
 ├── requirements.txt
-├── .env                     # DEEPSEEK_API_KEY (not committed)
+├── pyproject.toml            # Ruff linter + pytest config
+├── pytest.ini                # Pytest markers (unit / integration)
+├── .github/
+│   └── workflows/
+│       └── ci.yml            # GitHub Actions CI pipeline
+├── .env                      # DEEPSEEK_API_KEY (not committed)
 ├── src/
 │   ├── download_sec_voluntary_filings.py  # SEC filing downloader
 │   ├── schema.py                          # Pydantic data models
@@ -165,18 +170,36 @@ Business-rule errors can downgrade the LLM-assigned confidence score but never u
 
 ## Testing
 
+Tests use pytest markers to separate fast unit tests from integration tests. By default, only unit tests run:
+
 ```bash
-# Run all tests
+# Unit tests only (default — fast, no disk I/O)
 ./venv/bin/python -m pytest tests/ -v
 
-# Unit tests only (fast, no disk I/O)
-./venv/bin/python -m pytest tests/unit/ -v
+# All tests
+./venv/bin/python -m pytest tests/ -v -m "unit or integration"
 
 # Integration tests (requires downloaded filings)
-./venv/bin/python -m pytest tests/integration/ -v
+./venv/bin/python -m pytest tests/ -v -m integration
 ```
 
-Integration tests use real filings from `output/sec_filings/` in dry-run mode (no LLM calls).
+Integration tests use real filings from `output/sec_filings/` in dry-run mode (no LLM calls). Run `./venv/bin/python main.py --download-only` first to download the test data.
+
+## Linting & Formatting
+
+Ruff is configured in `pyproject.toml` (line length 100, Python 3.11+):
+
+```bash
+./venv/bin/python -m ruff check src/ tests/ main.py
+./venv/bin/python -m ruff check --fix src/ tests/ main.py   # auto-fix
+```
+
+## CI Pipeline
+
+GitHub Actions runs on every push and PR:
+- **Lint** — ruff check
+- **Unit tests** — Python 3.11 + 3.12
+- **Integration tests** — downloads SEC filings, runs integration suite
 
 ## SEC Fair Access
 
@@ -192,4 +215,5 @@ This project queries the SEC EDGAR system. Per SEC requirements:
 - **Pydantic** — Structured output schemas
 - **BeautifulSoup4** + **lxml** — HTML parsing
 - **Requests** — SEC EDGAR HTTP client
-- **pytest** — Test framework
+- **pytest** — Test framework (with unit/integration markers)
+- **ruff** — Fast Python linter and formatter

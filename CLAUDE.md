@@ -24,6 +24,11 @@ These three form types are the primary carriers of voluntary corporate action in
 ```
 .
 ├── main.py                    # End-to-end pipeline entry point
+├── pyproject.toml             # Ruff linter + pytest config
+├── pytest.ini                 # Pytest markers (unit / integration)
+├── .github/
+│   └── workflows/
+│       └── ci.yml             # GitHub Actions CI pipeline
 ├── src/
 │   ├── __init__.py                        # Package marker
 │   ├── download_sec_voluntary_filings.py  # SEC EDGAR filing downloader
@@ -145,9 +150,32 @@ Run the full test suite (unit + integration) with pytest:
 ```
 ./venv/bin/python -m pytest tests/ -v
 ```
-- **Unit tests** (`tests/unit/`) — fast, no network/disk dependencies beyond sample fixtures.
-- **Integration tests** (`tests/integration/`) — run against real downloaded filings in `output/sec_filings/`. Dry-run only; no LLM calls.
+- **Unit tests** (`tests/unit/`) — fast, no network/disk dependencies beyond sample fixtures. Tagged with `@pytest.mark.unit`.
+- **Integration tests** (`tests/integration/`) — run against real downloaded filings in `output/sec_filings/`. Dry-run only; no LLM calls. Tagged with `@pytest.mark.integration`.
 - Integration tests require at least one date of filings to be downloaded first (`./venv/bin/python main.py --download-only`).
+
+### Test markers
+Pytest is configured (in `pyproject.toml` / `pytest.ini`) to run only unit tests by default:
+```
+./venv/bin/python -m pytest tests/               # unit only (default)
+./venv/bin/python -m pytest tests/ -m unit       # explicit unit
+./venv/bin/python -m pytest tests/ -m integration  # integration only
+```
+
+## Linting
+Ruff is configured in `pyproject.toml` (line length 100, target Python 3.11+). Run it before committing:
+```
+./venv/bin/python -m ruff check src/ tests/ main.py
+./venv/bin/python -m ruff check --fix src/ tests/ main.py   # auto-fix
+```
+
+## CI Pipeline
+GitHub Actions runs on every push and PR to `main`/`master`:
+- **Lint** — ruff check across the codebase
+- **Unit tests** — matrix across Python 3.11 and 3.12
+- **Integration tests** — downloads SEC filings for the test date, then runs integration tests against them
+
+Configuration lives in `.github/workflows/ci.yml`.
 
 ## LLM Configuration
 - **Provider**: DeepSeek (via the OpenAI-compatible SDK).
