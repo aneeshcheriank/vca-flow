@@ -52,7 +52,9 @@ jobs:
         run: python -m pytest tests/unit/ -v
 
   # ---------------------------------------------------------------------------
-  # Integration tests — download filings, then test against real data
+  # Integration tests — download filings, then test against real data.
+  # The SEC EDGAR API may block CI IP ranges (403); if the download fails
+  # the integration tests will skip gracefully (no filing data on disk).
   # ---------------------------------------------------------------------------
   integration-tests:
     name: Integration tests
@@ -71,7 +73,9 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Download SEC filings for test date
+        id: download
+        continue-on-error: true
         run: python src/download_sec_voluntary_filings.py --date 2026-06-22
 
       - name: Run integration tests
-        run: python -m pytest tests/integration/ -v
+        run: python -m pytest tests/integration/ -v --no-header -p no:warnings

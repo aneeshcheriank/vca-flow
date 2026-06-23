@@ -34,7 +34,25 @@ def sec_filings_dir(project_root: Path) -> Path:
 
 @pytest.fixture(scope="session")
 def date_dir(sec_filings_dir: Path) -> Path:
-    return sec_filings_dir / "2026-06-22"
+    path = sec_filings_dir / "2026-06-22"
+    if not path.is_dir():
+        pytest.skip(
+            "SEC filing data not found — download it first with "
+            "`./venv/bin/python src/download_sec_voluntary_filings.py --date 2026-06-22`"
+        )
+    return path
+
+
+def _check_filing(path: Path) -> Path:
+    """Return *path* if it exists, otherwise skip the test.
+
+    Used by session-scoped integration fixtures so that tests
+    gracefully skip when filing data isn't available (e.g. in CI
+    where the SEC blocks cloud IP ranges).
+    """
+    if not path.is_file():
+        pytest.skip(f"Filing not downloaded: {path.name}")
+    return path
 
 
 # ---------------------------------------------------------------------------
@@ -44,19 +62,19 @@ def date_dir(sec_filings_dir: Path) -> Path:
 @pytest.fixture(scope="session")
 def sc_14d9a_filing(date_dir: Path) -> Path:
     """Small SC 14D9/A filing — 17 KB, ideal for fast integration tests."""
-    return date_dir / "SC 14D9_A" / "0001140361-26-025974.txt"
+    return _check_filing(date_dir / "SC 14D9_A" / "0001140361-26-025974.txt")
 
 
 @pytest.fixture(scope="session")
 def sc_toi_filing(date_dir: Path) -> Path:
     """Medium SC TO-I filing — ~338 KB."""
-    return date_dir / "SC TO-I" / "0001398344-26-011079.txt"
+    return _check_filing(date_dir / "SC TO-I" / "0001398344-26-011079.txt")
 
 
 @pytest.fixture(scope="session")
 def sc_toi_large_filing(date_dir: Path) -> Path:
     """Large SC TO-I filing — ~22 MB (includes all exhibits)."""
-    return date_dir / "SC TO-I" / "0001702510-26-000064.txt"
+    return _check_filing(date_dir / "SC TO-I" / "0001702510-26-000064.txt")
 
 
 # ---------------------------------------------------------------------------
